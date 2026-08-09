@@ -1,438 +1,1449 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>My Gold & Silver Value</title>
+<title>Gold Vault</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: #f5f5f7;
-      color: #1d1d1f;
-    }
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: #f4f4f6;
+    color: #1d1d1f;
+}
+
+.container {
+    max-width: 720px;
+    margin: auto;
+    padding: 18px;
+}
+
+header {
+    text-align: center;
+    padding: 18px 0 24px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+header p {
+    margin-top: 8px;
+    color: #777;
+}
+
+.total-card {
+    background: white;
+    border-radius: 24px;
+    padding: 28px 20px;
+    text-align: center;
+    margin-bottom: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+}
+
+.total-label {
+    color: #777;
+    font-size: 14px;
+}
+
+.total {
+    font-size: 43px;
+    font-weight: 700;
+    margin: 8px 0;
+}
+
+.updated {
+    color: #888;
+    font-size: 12px;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.summary-card {
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+}
+
+.summary-card span {
+    display: block;
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 7px;
+}
+
+.summary-card strong {
+    font-size: 22px;
+}
+
+.section {
+    margin-top: 28px;
+}
+
+.section-title {
+    font-size: 21px;
+    margin: 0 0 12px;
+}
+
+.section-subtitle {
+    color: #777;
+    font-size: 13px;
+    margin-top: -7px;
+    margin-bottom: 12px;
+}
+
+.item {
+    background: white;
+    border-radius: 18px;
+    padding: 17px;
+    margin-bottom: 10px;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.item-name {
+    font-weight: 600;
+    font-size: 17px;
+}
+
+.item-price {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.item-info {
+    color: #777;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 14px;
+}
+
+button {
+    border: none;
+    background: #e9e9ed;
+    border-radius: 11px;
+    width: 42px;
+    height: 42px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+input {
+    width: 78px;
+    height: 42px;
+    border: 1px solid #d7d7da;
+    border-radius: 11px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.item-total {
+    margin-left: auto;
+    font-weight: 600;
+}
+
+.add-button {
+    width: 100%;
+    background: #1d1d1f;
+    color: white;
+    font-size: 16px;
+    height: 48px;
+    margin-top: 5px;
+}
+
+.add-form {
+    display: none;
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 12px;
+}
+
+.add-form.show {
+    display: block;
+}
+
+.form-row {
+    margin-bottom: 12px;
+}
+
+.form-row label {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.form-row input,
+.form-row select {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #d7d7da;
+    border-radius: 11px;
+    padding: 0 12px;
+    font-size: 16px;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.form-buttons button {
+    flex: 1;
+    width: auto;
+    font-size: 15px;
+}
+
+.save-button {
+    background: #1d1d1f;
+    color: white;
+}
+
+.cancel-button {
+    background: #e9e9ed;
+}
+
+.prices {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    margin-top: 28px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.price-row:last-child {
+    border-bottom: none;
+}
+
+.note {
+    margin: 20px 0;
+    color: #777;
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+@media (max-width: 500px) {
 
     .container {
-      max-width: 700px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    header {
-      text-align: center;
-      padding: 20px 0;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 30px;
-    }
-
-    header p {
-      color: #666;
-      margin-top: 8px;
-    }
-
-    .total-card {
-      background: white;
-      border-radius: 24px;
-      padding: 28px;
-      text-align: center;
-      margin-bottom: 18px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-    }
-
-    .total-label {
-      color: #777;
-      font-size: 15px;
+        padding: 13px;
     }
 
     .total {
-      font-size: 42px;
-      font-weight: 700;
-      margin: 8px 0;
+        font-size: 36px;
     }
 
-    .updated {
-      color: #888;
-      font-size: 13px;
-    }
-
-    .summary {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .summary-card {
-      background: white;
-      border-radius: 18px;
-      padding: 18px;
-    }
-
-    .summary-card span {
-      display: block;
-      color: #777;
-      font-size: 14px;
-      margin-bottom: 6px;
-    }
-
-    .summary-card strong {
-      font-size: 23px;
-    }
-
-    .section-title {
-      font-size: 20px;
-      margin: 25px 0 12px;
-    }
-
-    .item {
-      background: white;
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 12px;
-    }
-
-    .item-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .item-name {
-      font-weight: 600;
-      font-size: 17px;
-    }
-
-    .item-price {
-      font-weight: 600;
-    }
-
-    .item-info {
-      color: #777;
-      font-size: 13px;
-      margin-top: 5px;
+    .item-header {
+        flex-direction: column;
     }
 
     .controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 15px;
+        flex-wrap: wrap;
     }
 
-    button {
-      border: none;
-      background: #e9e9ed;
-      border-radius: 12px;
-      width: 42px;
-      height: 42px;
-      font-size: 22px;
-      cursor: pointer;
-    }
-
-    button:active {
-      transform: scale(0.95);
-    }
-
-    input {
-      width: 70px;
-      height: 42px;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      text-align: center;
-      font-size: 17px;
-    }
-
-    .value {
-      margin-left: auto;
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .prices {
-      background: white;
-      border-radius: 18px;
-      padding: 20px;
-      margin-top: 25px;
-    }
-
-    .price-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    .price-row:last-child {
-      border-bottom: none;
-    }
-
-    .note {
-      margin-top: 20px;
-      color: #777;
-      font-size: 12px;
-      line-height: 1.5;
-      text-align: center;
-    }
-
-    @media (max-width: 500px) {
-      .container {
-        padding: 14px;
-      }
-
-      .total {
-        font-size: 36px;
-      }
-
-      .item-top {
-        flex-direction: column;
-      }
-
-      .value {
+    .item-total {
         margin-left: 0;
-      }
+        width: 100%;
+        margin-top: 3px;
     }
-  </style>
+
+}
+
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <header>
-    <h1>🪙 My Gold & Silver</h1>
-    <p>Estimated BullionByPost selling value</p>
-  </header>
+<header>
+    <h1>🪙 Gold Vault</h1>
+    <p>Estimated value if sold to BullionByPost</p>
+</header>
 
-  <div class="total-card">
-    <div class="total-label">TOTAL ESTIMATED VALUE</div>
-    <div class="total" id="total">£0.00</div>
-    <div class="updated">Based on current selling prices entered below</div>
-  </div>
 
-  <div class="summary">
+<!-- TOTAL -->
 
-    <div class="summary-card">
-      <span>🟡 Gold</span>
-      <strong id="goldTotal">£0.00</strong>
+<div class="total-card">
+
+    <div class="total-label">
+        TOTAL ESTIMATED SELLING VALUE
     </div>
 
-    <div class="summary-card">
-      <span>⚪ Silver</span>
-      <strong id="silverTotal">£0.00</strong>
+    <div class="total" id="total">
+        £0.00
     </div>
 
-  </div>
-
-  <h2 class="section-title">My Holdings</h2>
-
-  <div id="holdings"></div>
-
-  <div class="prices">
-
-    <h2 style="margin-top:0;">Current Selling Prices</h2>
-
-    <div class="price-row">
-      <span>Half Sovereign</span>
-      <strong>£364.01</strong>
+    <div class="updated">
+        Based on BullionByPost "up to" selling prices
     </div>
-
-    <div class="price-row">
-      <span>Full Sovereign</span>
-      <strong>£728.02</strong>
-    </div>
-
-    <div class="price-row">
-      <span>2.5g Gold Bar</span>
-      <strong>£248.56</strong>
-    </div>
-
-    <div class="price-row">
-      <span>5g Gold Bar</span>
-      <strong>£497.12</strong>
-    </div>
-
-    <div class="price-row">
-      <span>1oz Silver Coin</span>
-      <strong>£47.24</strong>
-    </div>
-
-  </div>
-
-  <div class="note">
-    Prices are indicative BullionByPost "up to" selling prices and can change.
-    This calculator provides an estimate only and is not a guaranteed valuation.
-  </div>
 
 </div>
 
+
+<!-- SUMMARY -->
+
+<div class="summary">
+
+    <div class="summary-card">
+
+        <span>🟡 Gold</span>
+
+        <strong id="goldTotal">
+            £0.00
+        </strong>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <span>⚪ Silver</span>
+
+        <strong id="silverTotal">
+            £0.00
+        </strong>
+
+    </div>
+
+</div>
+
+
+
+<!-- GOLD COINS -->
+
+<div class="section">
+
+<h2 class="section-title">
+    🪙 Gold Coins
+</h2>
+
+<div id="goldCoins"></div>
+
+</div>
+
+
+
+<!-- GOLD BARS -->
+
+<div class="section">
+
+<h2 class="section-title">
+    🟨 Gold Bars
+</h2>
+
+<div id="goldBars"></div>
+
+</div>
+
+
+
+<!-- GOLD CHAINS -->
+
+<div class="section">
+
+<h2 class="section-title">
+    ⛓️ Gold Chains
+</h2>
+
+<div class="section-subtitle">
+    Enter the weight of each chain.
+</div>
+
+<div id="chains"></div>
+
+<button class="add-button" id="addChainButton">
+    + Add Gold Chain
+</button>
+
+<div class="add-form" id="chainForm">
+
+    <div class="form-row">
+
+        <label>
+            Chain name
+        </label>
+
+        <input
+            id="chainName"
+            type="text"
+            placeholder="e.g. Gold Chain"
+        >
+
+    </div>
+
+
+    <div class="form-row">
+
+        <label>
+            Gold purity
+        </label>
+
+        <select id="chainPurity">
+
+            <option value="9">
+                9ct
+            </option>
+
+            <option value="18">
+                18ct
+            </option>
+
+            <option value="22">
+                22ct
+            </option>
+
+            <option value="24">
+                24ct
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-row">
+
+        <label>
+            Weight (grams)
+        </label>
+
+        <input
+            id="chainWeight"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+        >
+
+    </div>
+
+
+    <div class="form-buttons">
+
+        <button
+            class="cancel-button"
+            id="cancelChain"
+        >
+            Cancel
+        </button>
+
+        <button
+            class="save-button"
+            id="saveChain"
+        >
+            Add Chain
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+
+
+<!-- GOLD RINGS -->
+
+<div class="section">
+
+<h2 class="section-title">
+    💍 Gold Rings
+</h2>
+
+<div class="section-subtitle">
+    Enter the weight of each ring.
+</div>
+
+<div id="rings"></div>
+
+<button class="add-button" id="addRingButton">
+    + Add Gold Ring
+</button>
+
+<div class="add-form" id="ringForm">
+
+    <div class="form-row">
+
+        <label>
+            Ring name
+        </label>
+
+        <input
+            id="ringName"
+            type="text"
+            placeholder="e.g. Gold Ring"
+        >
+
+    </div>
+
+
+    <div class="form-row">
+
+        <label>
+            Gold purity
+        </label>
+
+        <select id="ringPurity">
+
+            <option value="9">
+                9ct
+            </option>
+
+            <option value="18">
+                18ct
+            </option>
+
+            <option value="22">
+                22ct
+            </option>
+
+            <option value="24">
+                24ct
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-row">
+
+        <label>
+            Weight (grams)
+        </label>
+
+        <input
+            id="ringWeight"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+        >
+
+    </div>
+
+
+    <div class="form-buttons">
+
+        <button
+            class="cancel-button"
+            id="cancelRing"
+        >
+            Cancel
+        </button>
+
+        <button
+            class="save-button"
+            id="saveRing"
+        >
+            Add Ring
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+
+
+<!-- SILVER -->
+
+<div class="section">
+
+<h2 class="section-title">
+    ⚪ Silver
+</h2>
+
+<div id="silver"></div>
+
+</div>
+
+
+
+<!-- PRICES -->
+
+<div class="prices">
+
+<h2 style="margin-top:0;">
+    Current BullionByPost Rates
+</h2>
+
+
+<div class="price-row">
+    <span>Half Sovereign</span>
+    <strong>£364.01</strong>
+</div>
+
+<div class="price-row">
+    <span>Gold Sovereign</span>
+    <strong>£728.02</strong>
+</div>
+
+<div class="price-row">
+    <span>2.5g Gold Bar</span>
+    <strong>£248.56</strong>
+</div>
+
+<div class="price-row">
+    <span>5g Gold Bar</span>
+    <strong>£497.12</strong>
+</div>
+
+<div class="price-row">
+    <span>9ct Gold</span>
+    <strong>£37.28/g</strong>
+</div>
+
+<div class="price-row">
+    <span>18ct Gold</span>
+    <strong>£74.57/g</strong>
+</div>
+
+<div class="price-row">
+    <span>22ct Gold</span>
+    <strong>£91.14/g</strong>
+</div>
+
+<div class="price-row">
+    <span>24ct Gold</span>
+    <strong>£99.42/g</strong>
+</div>
+
+<div class="price-row">
+    <span>1oz Silver Coin</span>
+    <strong>£47.24</strong>
+</div>
+
+<div class="price-row">
+    <span>50g Silver Bar</span>
+    <strong>£70.78</strong>
+</div>
+
+<div class="price-row">
+    <span>100g Silver Bar</span>
+    <strong>£141.57</strong>
+</div>
+
+</div>
+
+
+
+<div class="note">
+
+Prices are indicative BullionByPost "up to" selling prices
+and can change. Actual prices may vary depending on quantity
+and the item being sold.
+
+<br><br>
+
+Source:
+BullionByPost Sell to Us
+
+</div>
+
+
+</div>
+
+
+
 <script>
 
-const items = [
 
-  {
-    name: "Half Sovereigns",
-    price: 364.01,
-    quantity: 12
-  },
+/* ================================
+   BULLIONBYPOST SELLING PRICES
+================================ */
 
-  {
-    name: "Full Sovereigns",
-    price: 728.02,
-    quantity: 3
-  },
+const goldRates = {
 
-  {
-    name: "2.5g Gold Bars",
-    price: 248.56,
-    quantity: 1
-  },
+    9: 37.28,
 
-  {
-    name: "5g Gold Bars",
-    price: 497.12,
-    quantity: 1
-  },
+    18: 74.57,
 
-  {
-    name: "1oz Silver Coins",
-    price: 47.24,
-    quantity: 13
-  }
+    22: 91.14,
+
+    24: 99.42
+
+};
+
+
+
+/* ================================
+   FIXED HOLDINGS
+================================ */
+
+const goldCoins = [
+
+    {
+        name: "Half Sovereigns",
+        price: 364.01,
+        quantity: 12
+    },
+
+    {
+        name: "Gold Sovereigns",
+        price: 728.02,
+        quantity: 3
+    }
 
 ];
 
-function money(value) {
 
-  return new Intl.NumberFormat("en-GB", {
-    style: "currency",
-    currency: "GBP"
-  }).format(value);
+const goldBars = [
 
-}
+    {
+        name: "2.5g Gold Bars",
+        price: 248.56,
+        quantity: 1
+    },
 
-function updateApp() {
-
-  const holdings = document.getElementById("holdings");
-
-  holdings.innerHTML = "";
-
-  let goldTotal = 0;
-  let silverTotal = 0;
-
-  items.forEach((item, index) => {
-
-    const itemValue = item.price * item.quantity;
-
-    if (index < 4) {
-      goldTotal += itemValue;
-    } else {
-      silverTotal += itemValue;
+    {
+        name: "5g Gold Bars",
+        price: 497.12,
+        quantity: 1
     }
 
-    const div = document.createElement("div");
+];
 
-    div.className = "item";
 
-    div.innerHTML = `
+const silverItems = [
 
-      <div class="item-top">
+    {
+        name: "1oz Silver Coins",
+        price: 47.24,
+        quantity: 13
+    },
 
-        <div>
+    {
+        name: "50g Silver Bars",
+        price: 70.78,
+        quantity: 0
+    },
 
-          <div class="item-name">
-            ${item.name}
-          </div>
+    {
+        name: "100g Silver Bars",
+        price: 141.57,
+        quantity: 0
+    }
 
-          <div class="item-info">
-            ${money(item.price)} per unit
-          </div>
+];
 
-        </div>
 
-        <div class="value">
-          ${money(itemValue)}
-        </div>
 
-      </div>
+/* ================================
+   JEWELLERY
+================================ */
 
-      <div class="controls">
+let chains = [];
 
-        <button onclick="changeQuantity(${index}, -1)">
-          −
-        </button>
+let rings = [];
 
-        <input
-          type="number"
-          min="0"
-          value="${item.quantity}"
-          onchange="setQuantity(${index}, this.value)"
-        >
 
-        <button onclick="changeQuantity(${index}, 1)">
-          +
-        </button>
 
-        <span style="color:#777;">
-          ${index === 4 ? "coins" : "units"}
-        </span>
+/* ================================
+   MONEY FORMAT
+================================ */
 
-      </div>
+function money(value) {
 
-    `;
-
-    holdings.appendChild(div);
-
-  });
-
-  const total = goldTotal + silverTotal;
-
-  document.getElementById("goldTotal").textContent =
-    money(goldTotal);
-
-  document.getElementById("silverTotal").textContent =
-    money(silverTotal);
-
-  document.getElementById("total").textContent =
-    money(total);
+    return new Intl.NumberFormat(
+        "en-GB",
+        {
+            style: "currency",
+            currency: "GBP"
+        }
+    ).format(value);
 
 }
 
-function changeQuantity(index, amount) {
 
-  items[index].quantity += amount;
 
-  if (items[index].quantity < 0) {
-    items[index].quantity = 0;
-  }
+/* ================================
+   RENDER FIXED ITEMS
+================================ */
 
-  updateApp();
+function renderFixedItems(
+    containerId,
+    items,
+    category
+) {
+
+    const container =
+        document.getElementById(containerId);
+
+    container.innerHTML = "";
+
+    items.forEach((item, index) => {
+
+        const value =
+            item.price * item.quantity;
+
+        const div =
+            document.createElement("div");
+
+        div.className = "item";
+
+        div.innerHTML = `
+
+            <div class="item-header">
+
+                <div>
+
+                    <div class="item-name">
+                        ${item.name}
+                    </div>
+
+                    <div class="item-info">
+                        ${money(item.price)} each
+                    </div>
+
+                </div>
+
+                <div class="item-price">
+                    ${money(value)}
+                </div>
+
+            </div>
+
+
+            <div class="controls">
+
+                <button
+                    onclick="changeFixedQuantity(
+                        '${category}',
+                        ${index},
+                        -1
+                    )"
+                >
+                    −
+                </button>
+
+
+                <input
+                    type="number"
+                    min="0"
+                    value="${item.quantity}"
+                    onchange="
+                        setFixedQuantity(
+                            '${category}',
+                            ${index},
+                            this.value
+                        )
+                    "
+                >
+
+
+                <button
+                    onclick="changeFixedQuantity(
+                        '${category}',
+                        ${index},
+                        1
+                    )"
+                >
+                    +
+                </button>
+
+
+                <span style="color:#777;">
+                    units
+                </span>
+
+            </div>
+
+        `;
+
+        container.appendChild(div);
+
+    });
 
 }
 
-function setQuantity(index, value) {
 
-  let quantity = Number(value);
 
-  if (isNaN(quantity) || quantity < 0) {
-    quantity = 0;
-  }
+/* ================================
+   JEWELLERY RENDER
+================================ */
 
-  items[index].quantity = quantity;
+function renderJewellery(
+    containerId,
+    items,
+    type
+) {
 
-  updateApp();
+    const container =
+        document.getElementById(containerId);
+
+    container.innerHTML = "";
+
+
+    items.forEach((item, index) => {
+
+        const price =
+            goldRates[item.purity];
+
+        const value =
+            price * item.weight;
+
+
+        const div =
+            document.createElement("div");
+
+        div.className = "item";
+
+
+        div.innerHTML = `
+
+            <div class="item-header">
+
+                <div>
+
+                    <div class="item-name">
+
+                        ${item.name}
+
+                    </div>
+
+                    <div class="item-info">
+
+                        ${item.purity}ct Gold ·
+                        ${item.weight.toFixed(2)}g ·
+                        ${money(price)}/g
+
+                    </div>
+
+                </div>
+
+
+                <div class="item-price">
+
+                    ${money(value)}
+
+                </div>
+
+            </div>
+
+
+            <div class="controls">
+
+                <button
+                    onclick="
+                        removeJewellery(
+                            '${type}',
+                            ${index}
+                        )
+                    "
+                >
+                    🗑
+                </button>
+
+            </div>
+
+        `;
+
+
+        container.appendChild(div);
+
+    });
 
 }
 
-updateApp();
+
+
+/* ================================
+   FIXED QUANTITY CONTROLS
+================================ */
+
+function changeFixedQuantity(
+    category,
+    index,
+    amount
+) {
+
+    let list;
+
+    if (category === "coins") {
+        list = goldCoins;
+    }
+
+    if (category === "bars") {
+        list = goldBars;
+    }
+
+    if (category === "silver") {
+        list = silverItems;
+    }
+
+
+    list[index].quantity += amount;
+
+
+    if (list[index].quantity < 0) {
+        list[index].quantity = 0;
+    }
+
+
+    renderAll();
+
+}
+
+
+
+function setFixedQuantity(
+    category,
+    index,
+    value
+) {
+
+    let list;
+
+    if (category === "coins") {
+        list = goldCoins;
+    }
+
+    if (category === "bars") {
+        list = goldBars;
+    }
+
+    if (category === "silver") {
+        list = silverItems;
+    }
+
+
+    list[index].quantity =
+        Math.max(
+            0,
+            Number(value) || 0
+        );
+
+
+    renderAll();
+
+}
+
+
+
+/* ================================
+   REMOVE JEWELLERY
+================================ */
+
+function removeJewellery(
+    type,
+    index
+) {
+
+    if (type === "chain") {
+
+        chains.splice(index, 1);
+
+    }
+
+    if (type === "ring") {
+
+        rings.splice(index, 1);
+
+    }
+
+
+    renderAll();
+
+}
+
+
+
+/* ================================
+   ADD CHAIN
+================================ */
+
+document
+    .getElementById("addChainButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            document
+                .getElementById("chainForm")
+                .classList
+                .add("show");
+
+        }
+    );
+
+
+
+document
+    .getElementById("cancelChain")
+    .addEventListener(
+        "click",
+        function() {
+
+            document
+                .getElementById("chainForm")
+                .classList
+                .remove("show");
+
+        }
+    );
+
+
+
+document
+    .getElementById("saveChain")
+    .addEventListener(
+        "click",
+        function() {
+
+            const name =
+                document
+                .getElementById("chainName")
+                .value
+                .trim()
+                || "Gold Chain";
+
+
+            const purity =
+                Number(
+                    document
+                    .getElementById("chainPurity")
+                    .value
+                );
+
+
+            const weight =
+                Number(
+                    document
+                    .getElementById("chainWeight")
+                    .value
+                );
+
+
+            if (weight <= 0) {
+
+                alert(
+                    "Please enter the chain weight."
+                );
+
+                return;
+
+            }
+
+
+            chains.push({
+
+                name: name,
+
+                purity: purity,
+
+                weight: weight
+
+            });
+
+
+            document
+                .getElementById("chainName")
+                .value = "";
+
+
+            document
+                .getElementById("chainWeight")
+                .value = "";
+
+
+            document
+                .getElementById("chainForm")
+                .classList
+                .remove("show");
+
+
+            renderAll();
+
+        }
+    );
+
+
+
+/* ================================
+   ADD RING
+================================ */
+
+document
+    .getElementById("addRingButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            document
+                .getElementById("ringForm")
+                .classList
+                .add("show");
+
+        }
+    );
+
+
+
+document
+    .getElementById("cancelRing")
+    .addEventListener(
+        "click",
+        function() {
+
+            document
+                .getElementById("ringForm")
+                .classList
+                .remove("show");
+
+        }
+    );
+
+
+
+document
+    .getElementById("saveRing")
+    .addEventListener(
+        "click",
+        function() {
+
+            const name =
+                document
+                .getElementById("ringName")
+                .value
+                .trim()
+                || "Gold Ring";
+
+
+            const purity =
+                Number(
+                    document
+                    .getElementById("ringPurity")
+                    .value
+                );
+
+
+            const weight =
+                Number(
+                    document
+                    .getElementById("ringWeight")
+                    .value
+                );
+
+
+            if (weight <= 0) {
+
+                alert(
+                    "Please enter the ring weight."
+                );
+
+                return;
+
+            }
+
+
+            rings.push({
+
+                name: name,
+
+                purity: purity,
+
+                weight: weight
+
+            });
+
+
+            document
+                .getElementById("ringName")
+                .value = "";
+
+
+            document
+                .getElementById("ringWeight")
+                .value = "";
+
+
+            document
+                .getElementById("ringForm")
+                .classList
+                .remove("show");
+
+
+            renderAll();
+
+        }
+    );
+
+
+
+/* ================================
+   MAIN CALCULATION
+================================ */
+
+function renderAll() {
+
+
+    renderFixedItems(
+        "goldCoins",
+        goldCoins,
+        "coins"
+    );
+
+
+    renderFixedItems(
+        "goldBars",
+        goldBars,
+        "bars"
+    );
+
+
+    renderFixedItems(
+        "silver",
+        silverItems,
+        "silver"
+    );
+
+
+    renderJewellery(
+        "chains",
+        chains,
+        "chain"
+    );
+
+
+    renderJewellery(
+        "rings",
+        rings,
+        "ring"
+    );
+
+
+
+    let goldTotal = 0;
+
+    let silverTotal = 0;
+
+
+
+    goldCoins.forEach(
+        item => {
+
+            goldTotal +=
+                item.price *
+                item.quantity;
+
+        }
+    );
+
+
+    goldBars.forEach(
+        item => {
+
+            goldTotal +=
+                item.price *
+                item.quantity;
+
+        }
+    );
+
+
+    chains.forEach(
+        item => {
+
+            goldTotal +=
+                goldRates[item.purity] *
+                item.weight;
+
+        }
+    );
+
+
+    rings.forEach(
+        item => {
+
+            goldTotal +=
+                goldRates[item.purity] *
+                item.weight;
+
+        }
+    );
+
+
+    silverItems.forEach(
+        item => {
+
+            silverTotal +=
+                item.price *
+                item.quantity;
+
+        }
+    );
+
+
+
+    const total =
+        goldTotal +
+        silverTotal;
+
+
+
+    document
+        .getElementById("goldTotal")
+        .textContent =
+        money(goldTotal);
+
+
+    document
+        .getElementById("silverTotal")
+        .textContent =
+        money(silverTotal);
+
+
+    document
+        .getElementById("total")
+        .textContent =
+        money(total);
+
+}
+
+
+
+/* ================================
+   START APP
+================================ */
+
+renderAll();
 
 </script>
 
