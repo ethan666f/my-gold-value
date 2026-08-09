@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My Gold & Silver Value</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    header p {
+      color: #666;
+      margin-top: 8px;
+    }
+
+    .total-card {
+      background: white;
+      border-radius: 24px;
+      padding: 28px;
+      text-align: center;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    }
+
+    .total-label {
+      color: #777;
+      font-size: 15px;
+    }
+
+    .total {
+      font-size: 42px;
+      font-weight: 700;
+      margin: 8px 0;
+    }
+
+    .updated {
+      color: #888;
+      font-size: 13px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .summary-card span {
+      display: block;
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .summary-card strong {
+      font-size: 23px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      margin: 25px 0 12px;
+    }
+
+    .item {
+      background: white;
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+
+    .item-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .item-name {
+      font-weight: 600;
+      font-size: 17px;
+    }
+
+    .item-price {
+      font-weight: 600;
+    }
+
+    .item-info {
+      color: #777;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      border: none;
+      background: #e9e9ed;
+      border-radius: 12px;
+      width: 42px;
+      height: 42px;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    input {
+      width: 70px;
+      height: 42px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .value {
+      margin-left: auto;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .prices {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      margin-top: 25px;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .price-row:last-child {
+      border-bottom: none;
+    }
+
+    .note {
+      margin-top: 20px;
+      color: #777;
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 14px;
+      }
+
+      .total {
+        font-size: 36px;
+      }
+
+      .item-top {
+        flex-direction: column;
+      }
+
+      .value {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>🪙 My Gold & Silver</h1>
+    <p>Estimated BullionByPost selling value</p>
+  </header>
+
+  <div class="total-card">
+    <div class="total-label">TOTAL ESTIMATED VALUE</div>
+    <div class="total" id="total">£0.00</div>
+    <div class="updated">Based on current selling prices entered below</div>
+  </div>
+
+  <div class="summary">
+
+    <div class="summary-card">
+      <span>🟡 Gold</span>
+      <strong id="goldTotal">£0.00</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>⚪ Silver</span>
+      <strong id="silverTotal">£0.00</strong>
+    </div>
+
+  </div>
+
+  <h2 class="section-title">My Holdings</h2>
+
+  <div id="holdings"></div>
+
+  <div class="prices">
+
+    <h2 style="margin-top:0;">Current Selling Prices</h2>
+
+    <div class="price-row">
+      <span>Half Sovereign</span>
+      <strong>£364.01</strong>
+    </div>
+
+    <div class="price-row">
+      <span>Full Sovereign</span>
+      <strong>£728.02</strong>
+    </div>
+
+    <div class="price-row">
+      <span>2.5g Gold Bar</span>
+      <strong>£248.56</strong>
+    </div>
+
+    <div class="price-row">
+      <span>5g Gold Bar</span>
+      <strong>£497.12</strong>
+    </div>
+
+    <div class="price-row">
+      <span>1oz Silver Coin</span>
+      <strong>£47.24</strong>
+    </div>
+
+  </div>
+
+  <div class="note">
+    Prices are indicative BullionByPost "up to" selling prices and can change.
+    This calculator provides an estimate only and is not a guaranteed valuation.
+  </div>
+
+</div>
+
+<script>
+
+const items = [
+
+  {
+    name: "Half Sovereigns",
+    price: 364.01,
+    quantity: 12
+  },
+
+  {
+    name: "Full Sovereigns",
+    price: 728.02,
+    quantity: 3
+  },
+
+  {
+    name: "2.5g Gold Bars",
+    price: 248.56,
+    quantity: 1
+  },
+
+  {
+    name: "5g Gold Bars",
+    price: 497.12,
+    quantity: 1
+  },
+
+  {
+    name: "1oz Silver Coins",
+    price: 47.24,
+    quantity: 13
+  }
+
+];
+
+function money(value) {
+
+  return new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: "GBP"
+  }).format(value);
+
+}
+
+function updateApp() {
+
+  const holdings = document.getElementById("holdings");
+
+  holdings.innerHTML = "";
+
+  let goldTotal = 0;
+  let silverTotal = 0;
+
+  items.forEach((item, index) => {
+
+    const itemValue = item.price * item.quantity;
+
+    if (index < 4) {
+      goldTotal += itemValue;
+    } else {
+      silverTotal += itemValue;
+    }
+
+    const div = document.createElement("div");
+
+    div.className = "item";
+
+    div.innerHTML = `
+
+      <div class="item-top">
+
+        <div>
+
+          <div class="item-name">
+            ${item.name}
+          </div>
+
+          <div class="item-info">
+            ${money(item.price)} per unit
+          </div>
+
+        </div>
+
+        <div class="value">
+          ${money(itemValue)}
+        </div>
+
+      </div>
+
+      <div class="controls">
+
+        <button onclick="changeQuantity(${index}, -1)">
+          −
+        </button>
+
+        <input
+          type="number"
+          min="0"
+          value="${item.quantity}"
+          onchange="setQuantity(${index}, this.value)"
+        >
+
+        <button onclick="changeQuantity(${index}, 1)">
+          +
+        </button>
+
+        <span style="color:#777;">
+          ${index === 4 ? "coins" : "units"}
+        </span>
+
+      </div>
+
+    `;
+
+    holdings.appendChild(div);
+
+  });
+
+  const total = goldTotal + silverTotal;
+
+  document.getElementById("goldTotal").textContent =
+    money(goldTotal);
+
+  document.getElementById("silverTotal").textContent =
+    money(silverTotal);
+
+  document.getElementById("total").textContent =
+    money(total);
+
+}
+
+function changeQuantity(index, amount) {
+
+  items[index].quantity += amount;
+
+  if (items[index].quantity < 0) {
+    items[index].quantity = 0;
+  }
+
+  updateApp();
+
+}
+
+function setQuantity(index, value) {
+
+  let quantity = Number(value);
+
+  if (isNaN(quantity) || quantity < 0) {
+    quantity = 0;
+  }
+
+  items[index].quantity = quantity;
+
+  updateApp();
+
+}
+
+updateApp();
+
+</script>
+
+</body>
+</html>
