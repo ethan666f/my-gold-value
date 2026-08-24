@@ -11,7 +11,6 @@ permissions:
 
 jobs:
   update-prices:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -19,60 +18,274 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Update prices
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Get BullionByPost prices
         run: |
 
-          python - <<'PY'
+          python <<'PY'
 
+          import requests
+          from bs4 import BeautifulSoup
           import json
+          import re
           from datetime import datetime, timezone
 
-          # --------------------------------------------------
-          # IMPORTANT:
-          # These values will be replaced with the latest
-          # BullionByPost selling prices.
-          # --------------------------------------------------
+          HEADERS = {
+              "User-Agent": (
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                  "AppleWebKit/537.36 Chrome/131 Safari/537.36"
+              )
+          }
+
+
+          def get_page(url):
+
+              response = requests.get(
+                  url,
+                  headers=HEADERS,
+                  timeout=30
+              )
+
+              response.raise_for_status()
+
+              return BeautifulSoup(
+                  response.text,
+                  "html.parser"
+              )
+
+
+          def find_price(soup):
+
+              # Look through visible page text for GBP prices.
+              text = soup.get_text(" ", strip=True)
+
+              matches = re.findall(
+                  r"£\s*([0-9,]+\.[0-9]{2})",
+                  text
+              )
+
+              if not matches:
+                  raise ValueError(
+                      "No GBP price found on page"
+                  )
+
+              prices = []
+
+              for value in matches:
+
+                  try:
+                      prices.append(
+                          float(value.replace(",", ""))
+                      )
+                  except ValueError:
+                      pass
+
+              if not prices:
+                  raise ValueError(
+                      "No usable GBP price found"
+                  )
+
+              return prices
+
+
+          def get_price(url, preferred=None):
+
+              soup = get_page(url)
+
+              text = soup.get_text(
+                  " ",
+                  strip=True
+              )
+
+              # First try to find a price immediately
+              # following "We pay".
+              match = re.search(
+                  r"We pay\s*(?:up to\s*)?£\s*"
+                  r"([0-9,]+\.[0-9]{2})",
+                  text,
+                  re.IGNORECASE
+              )
+
+              if match:
+
+                  return float(
+                      match.group(1).replace(",", "")
+                  )
+
+              prices = find_price(soup)
+
+              if preferred:
+
+                  for price in prices:
+
+                      if abs(price - preferred) < 0.01:
+
+                          return price
+
+              return prices[0]
+
+
+          # ------------------------------------------------
+          # BULLIONBYPOST PAGES
+          # ------------------------------------------------
+
+          urls = {
+
+              "main":
+              "https://www.bullionbypost.co.uk/sell-to-us/",
+
+              "silver50":
+              "https://www.bullionbypost.co.uk/"
+              "sell-to-us/sell-silver-bars/"
+              "50-gram-silver-bars/",
+
+              "silver100":
+              "https://www.bullionbypost.co.uk/"
+              "sell-to-us/sell-silver-bars/"
+              "100-gram/",
+
+          }
+
+
+          main_soup = get_page(
+              urls["main"]
+          )
+
+          main_text = main_soup.get_text(
+              " ",
+              strip=True
+          )
+
+
+          def find_named_price(
+              text,
+              name
+          ):
+
+              pattern = (
+                  re.escape(name)
+                  + r".{0,100}?£\s*"
+                  r"([0-9,]+\.[0-9]{2})"
+              )
+
+              match = re.search(
+                  pattern,
+                  text,
+                  re.IGNORECASE
+              )
+
+              if not match:
+
+                  raise ValueError(
+                      "Could not find price for "
+                      + name
+                  )
+
+              return float(
+                  match.group(1).replace(",", "")
+              )
+
 
           prices = {
 
-              "updated": datetime.now(
+              "updated":
+              datetime.now(
                   timezone.utc
               ).isoformat(),
 
-              "source": "BullionByPost",
+              "source":
+              "BullionByPost",
 
               "gold": {
 
-                  "9ct": 0,
-                  "18ct": 0,
-                  "22ct": 0,
-                  "24ct": 0
+                  "9ct":
+                  find_named_price(
+                      main_text,
+                      "9ct Scrap Gold"
+                  ),
+
+                  "18ct":
+                  find_named_price(
+                      main_text,
+                      "18ct Scrap Gold"
+                  ),
+
+                  "22ct":
+                  find_named_price(
+                      main_text,
+                      "22ct Scrap Gold"
+                  ),
+
+                  "24ct":
+                  find_named_price(
+                      main_text,
+                      "24ct Scrap Gold"
+                  )
 
               },
 
               "coins": {
 
-                  "halfSovereign": 0,
-                  "sovereign": 0
+                  "halfSovereign":
+                  find_named_price(
+                      main_text,
+                      "Half Sovereign"
+                  ),
+
+                  "sovereign":
+                  find_named_price(
+                      main_text,
+                      "Gold Sovereign"
+                  )
 
               },
 
               "bars": {
 
-                  "gold2_5g": 0,
-                  "gold5g": 0
+                  "gold2_5g":
+                  find_named_price(
+                      main_text,
+                      "2.5 Gram"
+                  ),
+
+                  "gold5g":
+                  find_named_price(
+                      main_text,
+                      "5 Gram"
+                  )
 
               },
 
               "silver": {
 
-                  "oneOzCoin": 0,
-                  "silver50g": 0,
-                  "silver100g": 0
+                  "oneOzCoin":
+                  find_named_price(
+                      main_text,
+                      "Silver Britannia Coin 1oz"
+                  ),
+
+                  "silver50g":
+                  get_price(
+                      urls["silver50"]
+                  ),
+
+                  "silver100g":
+                  get_price(
+                      urls["silver100"]
+                  )
 
               }
 
           }
+
+
+          # ------------------------------------------------
+          # WRITE PRICES.JSON
+          # ------------------------------------------------
 
           with open(
               "prices.json",
@@ -86,19 +299,37 @@ jobs:
                   indent=2
               )
 
+
+          print(
+              json.dumps(
+                  prices,
+                  indent=2
+              )
+          )
+
           PY
 
       - name: Commit updated prices
+
         run: |
 
-          git config user.name "github-actions[bot]"
+          git config user.name \
+            "github-actions[bot]"
 
           git config user.email \
             "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add prices.json
 
-          git diff --cached --quiet || \
-            git commit -m "Update BullionByPost prices"
+          if git diff --cached --quiet; then
 
-          git push
+            echo "No price changes."
+
+          else
+
+            git commit \
+              -m "Update BullionByPost prices"
+
+            git push
+
+          fi
