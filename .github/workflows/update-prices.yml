@@ -1,0 +1,104 @@
+name: Update BullionByPost Prices
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-prices:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update prices
+        run: |
+
+          python - <<'PY'
+
+          import json
+          from datetime import datetime, timezone
+
+          # --------------------------------------------------
+          # IMPORTANT:
+          # These values will be replaced with the latest
+          # BullionByPost selling prices.
+          # --------------------------------------------------
+
+          prices = {
+
+              "updated": datetime.now(
+                  timezone.utc
+              ).isoformat(),
+
+              "source": "BullionByPost",
+
+              "gold": {
+
+                  "9ct": 0,
+                  "18ct": 0,
+                  "22ct": 0,
+                  "24ct": 0
+
+              },
+
+              "coins": {
+
+                  "halfSovereign": 0,
+                  "sovereign": 0
+
+              },
+
+              "bars": {
+
+                  "gold2_5g": 0,
+                  "gold5g": 0
+
+              },
+
+              "silver": {
+
+                  "oneOzCoin": 0,
+                  "silver50g": 0,
+                  "silver100g": 0
+
+              }
+
+          }
+
+          with open(
+              "prices.json",
+              "w",
+              encoding="utf-8"
+          ) as file:
+
+              json.dump(
+                  prices,
+                  file,
+                  indent=2
+              )
+
+          PY
+
+      - name: Commit updated prices
+        run: |
+
+          git config user.name "github-actions[bot]"
+
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add prices.json
+
+          git diff --cached --quiet || \
+            git commit -m "Update BullionByPost prices"
+
+          git push
